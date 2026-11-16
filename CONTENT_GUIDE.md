@@ -77,7 +77,7 @@ export default defineSubject({
 })
 ```
 
-A subject with no chapters shows a "Coming soon" placeholder automatically.
+The subject `description` appears on its home-page card and under the subject page heading. Chapter cards on the subject page show only chapter titles. A subject with no chapters shows a "Coming soon" placeholder automatically.
 
 ## 4. Chapter file
 
@@ -101,7 +101,8 @@ export default defineChapter({
 })
 ```
 
-- **`oneLiner`**: the whole chapter in one sentence, shown at the top as "One-line revision". Answer *who / what / when / how many* in it.
+- **`title`**: the only text on the chapter's card on subject, folder and sub-topic listings. Cards are heading-only, so make the title self-explanatory ("Fundamental Rights", not "Chapter 3").
+- **`oneLiner`**: the whole chapter in one sentence, shown at the top of the chapter page as "One-line revision" and searched. It is **not** shown on listing cards. Answer *who / what / when / how many* in it.
 - **`sections`**: become the "On this page" table of contents and search results. Use 5–10 sections per chapter.
 
 ## 5. Block types
