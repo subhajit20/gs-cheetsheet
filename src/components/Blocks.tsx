@@ -9,6 +9,7 @@ import {
   EyeOff,
   Lightbulb,
   ListChecks,
+  ListTodo,
   Quote,
   Table2,
   TriangleAlert,
@@ -17,6 +18,7 @@ import type {
   Bi as BiText,
   Block,
   KeyPointsBlock,
+  McqBlock,
   MnemonicBlock,
   QuizBlock,
   RememberBlock,
@@ -35,7 +37,10 @@ const DEFAULT_TITLES: Record<string, BiText> = {
   table: { en: 'Quick table', bn: 'সংক্ষিপ্ত সারণি' },
   timeline: { en: 'Timeline', bn: 'সময়রেখা' },
   quiz: { en: 'Self-test', bn: 'নিজেকে যাচাই করো' },
+  mcq: { en: 'Practice MCQs', bn: 'অনুশীলনী MCQ' },
 }
+
+const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E', 'F']
 
 function Card({
   variant,
@@ -214,6 +219,85 @@ function Quiz({ block }: { block: QuizBlock }) {
   )
 }
 
+function McqItem({ item, index }: { item: McqBlock['items'][number]; index: number }) {
+  const [picked, setPicked] = useState<number | null>(null)
+  const [revealed, setRevealed] = useState(false)
+  const done = revealed || picked !== null
+  return (
+    <li className={`mcq-item ${done ? 'is-done' : ''}`}>
+      <div className="mcq-q">
+        <span className="mcq-num">{index + 1}.</span>
+        <Bi text={item.q} />
+      </div>
+      {item.statements && (
+        <ol className="mcq-statements">
+          {item.statements.map((s, i) => (
+            <li key={i}>
+              <Bi text={s} />
+            </li>
+          ))}
+        </ol>
+      )}
+      <ul className="mcq-options">
+        {item.options.map((o, i) => {
+          const state = !done ? '' : i === item.answer ? 'is-correct' : i === picked ? 'is-wrong' : 'is-dim'
+          return (
+            <li key={i}>
+              <button
+                type="button"
+                className={`mcq-option ${state} ${i === item.answer ? 'is-answer' : ''}`}
+                onClick={() => setPicked(i)}
+                disabled={done}
+              >
+                <span className="mcq-label">{OPTION_LABELS[i]}</span>
+                <Bi text={o} />
+                {done && i === item.answer && <CircleCheck size={16} aria-label="Correct answer" className="mcq-mark" />}
+                {done && i === picked && i !== item.answer && <CircleX size={16} aria-label="Your answer" className="mcq-mark" />}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+      <div className="mcq-foot">
+        {!done && (
+          <button type="button" className="btn btn-ghost btn-sm no-print" onClick={() => setRevealed(true)}>
+            <Eye size={15} /> <UiText en="Show answer" bn="উত্তর দেখাও" />
+          </button>
+        )}
+        {done && (
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm no-print"
+            onClick={() => {
+              setPicked(null)
+              setRevealed(false)
+            }}
+          >
+            <UiText en="Try again" bn="আবার চেষ্টা করো" />
+          </button>
+        )}
+      </div>
+      {item.explanation && (
+        <div className="mcq-explain">
+          <Bi text={item.explanation} />
+        </div>
+      )}
+    </li>
+  )
+}
+
+function Mcq({ block }: { block: McqBlock }) {
+  return (
+    <Card variant="mcq" icon={<ListTodo size={18} />} title={block.title ?? DEFAULT_TITLES.mcq}>
+      <ol className="mcq">
+        {block.items.map((item, i) => (
+          <McqItem key={i} item={item} index={i} />
+        ))}
+      </ol>
+    </Card>
+  )
+}
+
 export function BlockView({ block }: { block: Block }) {
   switch (block.type) {
     case 'text':
@@ -242,5 +326,7 @@ export function BlockView({ block }: { block: Block }) {
       )
     case 'quiz':
       return <Quiz block={block} />
+    case 'mcq':
+      return <Mcq block={block} />
   }
 }

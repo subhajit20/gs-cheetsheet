@@ -47,6 +47,16 @@ export function blockText(block: Block): string[] {
       return [...bi(block.text), ...bi(block.by)]
     case 'quiz':
       return [...title, ...block.items.flatMap((i) => [...bi(i.q), ...bi(i.a)])]
+    case 'mcq':
+      return [
+        ...title,
+        ...block.items.flatMap((i) => [
+          ...bi(i.q),
+          ...(i.statements ?? []).flatMap(bi),
+          ...i.options.flatMap(bi),
+          ...bi(i.explanation),
+        ]),
+      ]
   }
 }
 

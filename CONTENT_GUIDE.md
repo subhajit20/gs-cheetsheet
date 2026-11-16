@@ -103,7 +103,7 @@ export default defineChapter({
 
 - **`title`**: the only text on the chapter's card on subject, folder and sub-topic listings. Cards are heading-only, so make the title self-explanatory ("Fundamental Rights", not "Chapter 3").
 - **`oneLiner`**: the whole chapter in one sentence, shown at the top of the chapter page as "One-line revision" and searched. It is **not** shown on listing cards. Answer *who / what / when / how many* in it.
-- **`sections`**: become the "On this page" table of contents and search results. Use 5–10 sections per chapter.
+- **`sections`**: become the "On this page" table of contents and search results. Use 5–10 sections per chapter (more when the notes are long).
 
 ## 5. Block types
 
@@ -216,25 +216,57 @@ Answers stay hidden until tapped and always appear in print. Put 3–6 MCQ-style
 }
 ```
 
+### `mcq`: multiple-choice / previous-year questions [Practice MCQs / অনুশীলনী MCQ]
+
+Use this for every MCQ in the notes (PYQs, practice questions). Students tap an option to check it, and the correct option plus `explanation` are revealed. In print, the correct option is marked and explanations are shown. `answer` is the **zero-based index** of the correct option (`0` = A, `1` = B…). For "consider the following statements" questions, put the numbered statements in `statements` and keep the codes ("Only 1 and 2"…) in `options`.
+
+```ts
+{
+  type: 'mcq',
+  title: { en: 'PYQs from class', bn: 'ক্লাসের বিগত বছরের প্রশ্ন' }, // optional
+  items: [
+    {
+      q: { en: 'Consider the following statements…', bn: 'নিচের বিবৃতিগুলি বিবেচনা করো…' },
+      statements: [ // optional
+        { en: 'It is non-justiciable.', bn: 'এটি বিচারযোগ্য নয়।' },
+        { en: 'It cannot be amended.', bn: 'এটি সংশোধন করা যায় না।' },
+      ],
+      options: [
+        { en: 'Only 1', bn: 'কেবল ১' },
+        { en: 'Only 2', bn: 'কেবল ২' },
+        { en: 'Both 1 and 2', bn: '১ ও ২ উভয়ই' },
+        { en: 'Neither 1 nor 2', bn: '১ বা ২ কোনোটিই নয়' },
+      ],
+      answer: 0,
+      explanation: { en: 'The 42nd Amendment amended it.', bn: '৪২তম সংশোধনী এটি সংশোধন করেছে।' }, // optional
+    },
+  ],
+}
+```
+
 ## 6. Converting notes → cheat sheet: checklist
 
 1. **Create the file** in the right subject/chapter folder (section 1).
 2. **Write `oneLiner`** first. If you can't summarise the chapter in one sentence, re-read the notes.
-3. **Group the notes into 5–10 sections**, in this usual order:
+3. **Group the notes into sections**: usually 5–10, more for a long chapter. This is the usual order:
    1. Text / definition / at a glance (table or key points)
    2. Origin, history, dates (`timeline`)
-   3. Core concepts (`table` of term → meaning → exam note)
+   3. Core concepts (`table` of term → meaning → exam note), then one section per concept that the notes explain in depth
    4. Articles / cases / committees (`table`)
    5. Amendments, numbers, lists (`keyPoints` + `mnemonic`)
    6. Famous quotes (`table` or `quote`)
-   7. **Exam traps** (`traps`)
-   8. **Quick revision** (`keyPoints` recap + `quiz`)
-4. **Capture every exam-relevant fact** from the notes: dates, article numbers, amendment numbers, case names + years, counts, "who said what", sources/borrowed features. If the notes have it, the cheat sheet has it.
-5. Every number or list students must memorise gets a `remember` or a `mnemonic`.
-6. Every "students often confuse X with Y" goes into `traps`.
-7. Translate everything to Bengali (section 2 rules).
-8. Add `tags` for alternative search words (abbreviations, Bengali names, case names).
-9. Run `npm run build`. TypeScript will flag any missing field or wrong block shape. Open the chapter with `npm run dev` and check it in **EN**, **বাংলা**, **both** and print preview.
+   7. Related topics taught in the same class (e.g. types of majority inside the Preamble notes), as their own sections near the end
+   8. **Exam traps** (`traps`)
+   9. **Previous year questions** (`mcq`): every MCQ in the notes, with the answer marked in class
+   10. **Quick revision** (`keyPoints` recap + `quiz`)
+4. **Capture every exam-relevant fact** from the notes: dates, article numbers, amendment numbers, case names + years, counts, "who said what", sources/borrowed features, and the teacher's handwritten annotations on slides. If the notes have it, the cheat sheet has it.
+5. **Several sets of notes for one chapter** (e.g. part 1 and part 2): merge them into the **same** chapter file. Remove duplicates, keep the most complete version of each point, and record all parts in `source`. If the notes contradict the existing sheet, check a standard text and keep the correct fact. When the class counts something its own way, follow the class (e.g. Fraternity = 1 in "3-5-2-1").
+6. Every number or list students must memorise gets a `remember` or a `mnemonic`.
+7. Every "students often confuse X with Y" goes into `traps`.
+8. Translate everything to Bengali (section 2 rules). Notes in Hindi or another language are translated to **both** English and Bengali; don't copy Hindi text into `bn`.
+9. Add `tags` for alternative search words (abbreviations, Bengali names, case names).
+10. Update `updated` to today's date.
+11. Run `npm run build`. TypeScript will flag any missing field or wrong block shape. Open the chapter with `npm run dev` and check it in **EN**, **বাংলা**, **both** and print preview.
 
 ## 7. Style rules
 

@@ -105,6 +105,20 @@ export interface QuizBlock {
   items: { q: Bi; a: Bi }[]
 }
 
+export interface McqBlock {
+  type: 'mcq'
+  title?: Bi
+  items: {
+    q: Bi
+    /** Numbered statements for "consider the following statements" questions. */
+    statements?: Bi[]
+    options: Bi[]
+    /** Zero-based index into `options`. */
+    answer: number
+    explanation?: Bi
+  }[]
+}
+
 export type Block =
   | TextBlock
   | KeyPointsBlock
@@ -115,6 +129,7 @@ export type Block =
   | TimelineBlock
   | QuoteBlock
   | QuizBlock
+  | McqBlock
 
 export type BlockType = Block['type']
 
